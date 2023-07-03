@@ -1,23 +1,30 @@
-import logo from './logo.svg';
 import './App.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import axios from 'axios';
+import { useState, useEffect} from 'react';
+import Quotes from './components/Quotes';
 
 function App() {
+
+  const [quote,setQuote] = useState([]); 
+
+  const fetchData = function(){
+    axios.get("https://api.quotable.io/random")
+    .then(res =>setQuote([res.data]));
+  }
+
+  useEffect(() => {
+    fetchData();
+  }, [])
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {
+        quote.map((e,idx)=>{
+         return <Quotes key={idx} author={e.author} content={e.content} />
+        })
+      }
+      <button onClick={fetchData} className='btn btn--newquote'>New Quote</button>
     </div>
   );
 }
